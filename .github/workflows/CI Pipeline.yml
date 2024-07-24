@@ -27,7 +27,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push Docker images
+      - name: Build Docker images
         run: |
           docker-compose -f docker-compose.yml build
+
+      - name: Start Docker containers
+        run: |
           docker-compose -f docker-compose.yml up -d
+
+      - name: Run tests
+        run: |
+          # Add any commands to test your services here
+          echo "Running tests..."
+
+      - name: Stop Docker containers
+        run: |
+          docker-compose -f docker-compose.yml down
