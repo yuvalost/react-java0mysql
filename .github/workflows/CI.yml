@@ -38,12 +38,8 @@ jobs:
 
       - name: Run tests
         run: |
-          # Add commands to test your services here
-          # Example: Wait for services to be up
           sleep 30
-          # Example: Check if the frontend is accessible
           curl --fail http://localhost:80 || exit 1
-          # Example: Check if the backend is accessible
           curl --fail http://localhost:8080/api/health || exit 1
 
       - name: Stop Docker containers
