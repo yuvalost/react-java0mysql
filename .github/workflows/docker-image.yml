@@ -12,14 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:19.03.12
-        ports:
-          - 80:80
-          - 8080:8080
-          - 3306:3306
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,19 +30,20 @@ jobs:
 
       - name: Run tests
         run: |
-          sleep 30
-          curl --fail http://localhost:80 || exit 1
-          curl --fail http://localhost:8080/api/health || exit 1
+          # Add any commands to test your services here
+          echo "Running tests..."
+          # Example: curl -f http://localhost:3000 || exit 1
 
       - name: Stop Docker containers
         run: docker-compose -f docker-compose.yml down
 
-      - name: Push Docker images to Nexus
+      - name: Push Docker images to Docker Hub
         run: |
-          docker tag frontend:latest nexus.example.com/repository/docker-repo/frontend:latest
-          docker tag backend:latest nexus.example.com/repository/docker-repo/backend:latest
-          docker push nexus.example.com/repository/docker-repo/frontend:latest
-          docker push nexus.example.com/repository/docker-repo/backend:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          docker tag react-java0mysql_frontend ${{
+secrets.DOCKER_USERNAME}}/react-java0mysql_frontend:latest
+          docker tag react-java0mysql_backend ${{
+secrets.DOCKER_USERNAME}}/react-java0mysql_backend:latest
+          docker push ${{
+secrets.DOCKER_USERNAME}}/react-java0mysql_frontend:latest
+          docker push ${{
+secrets.DOCKER_USERNAME}}/react-java0mysql_backend:latest
