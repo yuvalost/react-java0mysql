@@ -1,0 +1,42 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10-dind
+        options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: docker/cache-action@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Build and test Docker Compose setup
+        run: |
+          docker-compose -f docker-compose.yml up --build -d
+          docker-compose ps
+          # Add any additional testing commands here, e.g. curl to check frontend, etc.
+
+      - name: Shut down Docker Compose
+        run: docker-compose down
