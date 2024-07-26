@@ -39,11 +39,7 @@ jobs:
 
       - name: Push Docker images to Docker Hub
         run: |
-          docker tag react-java0mysql_frontend ${{
-secrets.DOCKER_USERNAME}}/react-java0mysql_frontend:latest
-          docker tag react-java0mysql_backend ${{
-secrets.DOCKER_USERNAME}}/react-java0mysql_backend:latest
-          docker push ${{
-secrets.DOCKER_USERNAME}}/react-java0mysql_frontend:latest
-          docker push ${{
-secrets.DOCKER_USERNAME}}/react-java0mysql_backend:latest
+          docker tag react-java0mysql_frontend ${{ secrets.DOCKER_USERNAME }}/react-java0mysql_frontend:latest
+          docker tag react-java0mysql_backend ${{ secrets.DOCKER_USERNAME }}/react-java0mysql_backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-java0mysql_frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-java0mysql_backend:latest
