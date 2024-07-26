@@ -27,19 +27,34 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       - name: Build Docker images
-        run: |
-          docker-compose -f docker-compose.yml build
+        run: docker-compose -f docker-compose.yml build
 
       - name: Start Docker containers
-        run: |
-          docker-compose -f docker-compose.yml up -d
+        run: docker-compose -f docker-compose.yml up -d
 
       - name: Run tests
         run: |
-          # Add any commands to test your services here
-          echo "Running tests..."
+          # Add commands to test your services here
+          # Example: Wait for services to be up
+          sleep 30
+          # Example: Check if the frontend is accessible
+          curl --fail http://localhost:80 || exit 1
+          # Example: Check if the backend is accessible
+          curl --fail http://localhost:8080/api/health || exit 1
 
       - name: Stop Docker containers
+        run: docker-compose -f docker-compose.yml down
+
+      - name: Push Docker images to Nexus
         run: |
-          docker-compose -f docker-compose.yml down
+          docker tag frontend:latest nexus.example.com/repository/docker-repo/frontend:latest
+          docker tag backend:latest nexus.example.com/repository/docker-repo/backend:latest
+          docker push nexus.example.com/repository/docker-repo/frontend:latest
+          docker push nexus.example.com/repository/docker-repo/backend:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
